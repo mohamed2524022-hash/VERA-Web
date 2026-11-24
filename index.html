@@ -1,0 +1,1279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VERA | Cloud Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #080f1d;
+    color: #e2e8f0;
+}
+
+.container {
+    max-width: 1350px;
+    margin: auto;
+    padding: 25px;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+.brand {
+    font-size: 36px;
+    font-weight: bold;
+    color: #38bdf8;
+}
+
+.subtitle {
+    color: #94a3b8;
+}
+
+.card {
+    background: #111b2e;
+    border: 1px solid #26354b;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.login-card {
+    max-width: 430px;
+    margin: 12vh auto;
+}
+
+input {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    background: #080f1d;
+    color: white;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+button {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #0369a1;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.logout {
+    background: #be123c;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+}
+
+.metric-label {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.metric-value {
+    font-size: 34px;
+    font-weight: bold;
+    margin-top: 12px;
+    color: #38bdf8;
+}
+
+.green {
+    color: #22c55e;
+}
+
+.red {
+    color: #f87171;
+}
+
+.yellow {
+    color: #facc15;
+}
+
+.status {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 12px 0;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th, td {
+    text-align: left;
+    padding: 14px;
+    border-bottom: 1px solid #26354b;
+}
+
+th {
+    color: #94a3b8;
+}
+
+tr:hover {
+    background: #17243a;
+}
+
+.progress-track {
+    height: 14px;
+    background: #26354b;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+}
+
+.progress-fill {
+    background: #22c55e;
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s;
+}
+
+.question {
+    padding: 15px;
+    background: #080f1d;
+    border-radius: 10px;
+    margin: 10px 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.question.correct {
+    border-left: 4px solid #22c55e;
+}
+
+.question.incorrect {
+    border-left: 4px solid #ef4444;
+}
+
+.question.unanswered {
+    border-left: 4px solid #facc15;
+}
+
+canvas {
+    width: 100%;
+    height: 280px;
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    color: #64748b;
+    padding: 20px;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 14px;
+    }
+
+    .brand {
+        font-size: 28px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginSection" class="container">
+
+    <div class="card login-card">
+
+        <div class="brand">VERA</div>
+
+        <p class="subtitle">
+            Intelligent Assessment System
+        </p>
+
+        <hr style="border-color:#26354b">
+
+        <h2>Teacher Login</h2>
+
+        <form id="loginForm">
+
+            <input
+                id="email"
+                type="email"
+                placeholder="Email address"
+                autocomplete="username"
+                required
+            >
+
+            <input
+                id="password"
+                type="password"
+                placeholder="Password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button
+                id="loginButton"
+                class="full-width"
+                type="submit"
+            >
+                Sign In
+            </button>
+
+        </form>
+
+        <p id="loginStatus" class="status"></p>
+
+    </div>
+
+</div>
+
+
+<!-- ONLINE DASHBOARD -->
+
+<div id="dashboardSection"
+     class="container hidden">
+
+    <div class="header">
+
+        <div>
+
+            <div class="brand">
+                VERA Cloud
+            </div>
+
+            <p class="subtitle">
+                Intelligent Assessment & Learning Analytics
+            </p>
+
+            <div id="teacherEmail"
+                 class="status"></div>
+
+        </div>
+
+        <div>
+
+            <button id="refreshButton">
+                Refresh
+            </button>
+
+            <button id="logoutButton"
+                    class="logout">
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+    <p id="cloudStatus" class="status">
+        Connecting to VERA Cloud...
+    </p>
+
+
+    <!-- METRICS -->
+
+    <div class="metrics">
+
+        <div class="card">
+            <div class="metric-label">
+                Assessments
+            </div>
+            <div id="totalAssessments"
+                 class="metric-value">0</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">
+                Students
+            </div>
+            <div id="totalStudents"
+                 class="metric-value">0</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">
+                Average Score
+            </div>
+            <div id="averageScore"
+                 class="metric-value">0%</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">
+                Correct Answers
+            </div>
+            <div id="correctAnswers"
+                 class="metric-value green">0</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">
+                Incorrect Answers
+            </div>
+            <div id="incorrectAnswers"
+                 class="metric-value red">0</div>
+        </div>
+
+    </div>
+
+
+    <!-- PERFORMANCE -->
+
+    <div class="card">
+
+        <h2>Overall Performance</h2>
+
+        <div class="progress-track">
+            <div id="performanceBar"
+                 class="progress-fill">
+            </div>
+        </div>
+
+        <p id="performanceText">
+            No assessment data available.
+        </p>
+
+    </div>
+
+
+    <!-- STUDENT FILTER -->
+
+    <div class="card">
+
+        <h2>Student Search</h2>
+
+        <input
+            id="studentSearch"
+            placeholder="Enter Student ID, e.g. VERA-001"
+        >
+
+    </div>
+
+
+    <!-- CHART -->
+
+    <div class="card">
+
+        <h2>Performance Trend</h2>
+
+        <p id="chartDescription"
+           class="subtitle">
+            Search for a student to view their progress.
+        </p>
+
+        <canvas id="performanceChart"></canvas>
+
+    </div>
+
+
+    <!-- HISTORY -->
+
+    <div class="card">
+
+        <h2>Assessment History</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student</th>
+                        <th>Method</th>
+                        <th>Score</th>
+                        <th>Correct</th>
+                        <th>Incorrect</th>
+                        <th>Date</th>
+                        <th>Report</th>
+                    </tr>
+                </thead>
+
+                <tbody id="assessmentTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- DETAILED REPORT -->
+
+    <div class="card">
+
+        <h2>Detailed Assessment Report</h2>
+
+        <div id="reportContent">
+            Select an assessment to view its report.
+        </div>
+
+    </div>
+
+
+    <!-- LEARNING INSIGHTS -->
+
+    <div class="card">
+
+        <h2>Personalized Learning Insights</h2>
+
+        <div id="learningInsights">
+            Select an assessment to view recommendations.
+        </div>
+
+    </div>
+
+    <footer>
+        VERA | Cloud Assessment System
+        <br>
+        PaddleOCR · OpenCV · FastAPI · Supabase
+    </footer>
+
+</div>
+
+
+<script>
+
+// ========================================
+// SUPABASE CONFIGURATION
+// ========================================
+
+const SUPABASE_URL =
+    "https://dyfxmncyejzyfpyhtzls.supabase.co";
+
+const SUPABASE_KEY =
+    "PUT_YOUR_PUBLISHABLE_KEY_HERE";
+
+let client = null;
+
+let records = [];
+let selectedReport = null;
+let refreshTimer = null;
+let loading = false;
+let activeUserId = null;
+let sessionVersion = 0;
+
+const $ = id => document.getElementById(id);
+
+
+// ========================================
+// AUTHENTICATION
+// ========================================
+
+async function login(event) {
+
+    event.preventDefault();
+
+    if (!client) return;
+
+    $("loginButton").disabled = true;
+
+    $("loginStatus").textContent =
+        "Signing in...";
+
+    try {
+
+        const { data, error } =
+            await client.auth.signInWithPassword({
+                email: $("email").value.trim(),
+                password: $("password").value
+            });
+
+        if (error) throw error;
+
+        $("password").value = "";
+
+        await authorizeTeacher(data.user);
+
+    } catch (error) {
+
+        $("loginStatus").textContent =
+            error.message || "Login failed.";
+
+    } finally {
+
+        $("loginButton").disabled = false;
+
+    }
+
+}
+
+
+async function authorizeTeacher(user) {
+
+    const { data, error } = await client
+        .from("teachers")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (error || !data) {
+
+        await client.auth.signOut();
+
+        showLogin();
+
+        $("loginStatus").textContent =
+            "Access denied or teacher verification unavailable.";
+
+        return;
+
+    }
+
+    activeUserId = user.id;
+
+    $("teacherEmail").textContent =
+        user.email || "Teacher";
+
+    $("loginSection").classList.add("hidden");
+
+    $("dashboardSection").classList.remove("hidden");
+
+    await loadAssessments();
+
+    clearInterval(refreshTimer);
+
+    refreshTimer = setInterval(
+        loadAssessments, 10000
+    );
+
+}
+
+
+function showLogin() {
+
+    sessionVersion++;
+
+    activeUserId = null;
+
+    clearInterval(refreshTimer);
+
+    records = [];
+
+    selectedReport = null;
+
+    $("assessmentTable").replaceChildren();
+
+    $("reportContent").textContent =
+        "Select an assessment.";
+
+    $("learningInsights").textContent =
+        "Select an assessment.";
+
+    $("teacherEmail").textContent = "";
+
+    $("studentSearch").value = "";
+
+    $("dashboardSection").classList.add("hidden");
+
+    $("loginSection").classList.remove("hidden");
+
+}
+
+
+async function logout() {
+
+    showLogin();
+
+    const { error } =
+        await client.auth.signOut();
+
+    $("loginStatus").textContent = error
+        ? "Logout could not be completed. Please retry."
+        : "Logged out successfully.";
+
+}
+
+
+// ========================================
+// CLOUD DATA
+// ========================================
+
+async function loadAssessments() {
+
+    if (!activeUserId || loading) return;
+
+    loading = true;
+
+    const version = sessionVersion;
+
+    try {
+
+        const all = [];
+
+        const pageSize = 500;
+
+        let start = 0;
+
+        while (true) {
+
+            const { data, error } = await client
+                .from("assessments")
+                .select("*")
+                .order("created_at", {
+                    ascending: false
+                })
+                .order("id")
+                .range(start, start + pageSize - 1);
+
+            if (version !== sessionVersion) return;
+
+            if (error) throw error;
+
+            all.push(...(data || []));
+
+            if (!data || data.length < pageSize) {
+                break;
+            }
+
+            start += pageSize;
+
+        }
+
+        records = all;
+
+        $("cloudStatus").textContent =
+            "Cloud connected | " +
+            records.length +
+            " assessments | Updated: " +
+            new Date().toLocaleTimeString();
+
+        renderDashboard();
+
+        if (selectedReport) {
+
+            const updated = records.find(
+                row => row.id === selectedReport
+            );
+
+            if (updated) renderReport(updated);
+
+        }
+
+    } catch (error) {
+
+        if (version !== sessionVersion) return;
+
+        $("cloudStatus").textContent =
+            "Cloud refresh failed. Showing last loaded data.";
+
+    } finally {
+
+        loading = false;
+
+    }
+
+}
+
+
+// ========================================
+// DASHBOARD RENDERING
+// ========================================
+
+function getFilteredRecords() {
+
+    const query = $("studentSearch")
+        .value.trim().toUpperCase();
+
+    if (!query) return records;
+
+    return records.filter(record =>
+        String(record.student_id)
+            .toUpperCase()
+            .includes(query)
+    );
+
+}
+
+
+function renderDashboard() {
+
+    const filtered = getFilteredRecords();
+
+    const students = new Set(
+        filtered.map(row => row.student_id)
+    );
+
+    const correct = filtered.reduce(
+        (sum, row) =>
+            sum + Number(row.correct_answers || 0),
+        0
+    );
+
+    const incorrect = filtered.reduce(
+        (sum, row) =>
+            sum + Number(row.incorrect_answers || 0),
+        0
+    );
+
+    const totalQuestions = filtered.reduce(
+        (sum, row) =>
+            sum + Number(row.total_questions || 0),
+        0
+    );
+
+    const average = filtered.length
+        ? filtered.reduce(
+            (sum, row) =>
+                sum + Number(row.score_percentage || 0),
+            0
+          ) / filtered.length
+        : 0;
+
+    const accuracy = totalQuestions
+        ? correct / totalQuestions * 100
+        : 0;
+
+    $("totalAssessments").textContent =
+        filtered.length;
+
+    $("totalStudents").textContent =
+        students.size;
+
+    $("averageScore").textContent =
+        average.toFixed(2) + "%";
+
+    $("correctAnswers").textContent = correct;
+
+    $("incorrectAnswers").textContent = incorrect;
+
+    $("performanceBar").style.width =
+        Math.max(0, Math.min(100, accuracy)) + "%";
+
+    $("performanceText").textContent =
+        correct + " correct out of " +
+        totalQuestions + " questions (" +
+        accuracy.toFixed(2) + "%)";
+
+    renderTable(filtered);
+
+    drawChart(filtered);
+
+}
+
+
+// ========================================
+// ASSESSMENT TABLE
+// ========================================
+
+function renderTable(data) {
+
+    const table = $("assessmentTable");
+
+    table.replaceChildren();
+
+    for (const row of data) {
+
+        const tr = document.createElement("tr");
+
+        const values = [
+            row.local_id,
+            row.student_id,
+            row.recognition_method,
+            Number(row.score_percentage).toFixed(2) + "%",
+            row.correct_answers,
+            row.incorrect_answers,
+            new Date(row.created_at).toLocaleString()
+        ];
+
+        for (const value of values) {
+
+            const td = document.createElement("td");
+
+            td.textContent = value ?? "-";
+
+            tr.appendChild(td);
+
+        }
+
+        const action = document.createElement("td");
+
+        const button = document.createElement("button");
+
+        button.textContent = "View";
+
+        button.onclick = () => {
+
+            selectedReport = row.id;
+
+            renderReport(row);
+
+            $("reportContent").scrollIntoView({
+                behavior: "smooth"
+            });
+
+        };
+
+        action.appendChild(button);
+
+        tr.appendChild(action);
+
+        table.appendChild(tr);
+
+    }
+
+}
+
+
+// ========================================
+// DETAILED REPORT
+// ========================================
+
+function addText(parent, text, tag = "p") {
+
+    const element = document.createElement(tag);
+
+    element.textContent = text;
+
+    parent.appendChild(element);
+
+    return element;
+
+}
+
+
+function renderReport(row) {
+
+    const output = $("reportContent");
+
+    const insights = $("learningInsights");
+
+    output.replaceChildren();
+
+    insights.replaceChildren();
+
+    addText(
+        output,
+        "Student: " + row.student_id,
+        "h3"
+    );
+
+    addText(
+        output,
+        "Score: " +
+        Number(row.score_percentage).toFixed(2) +
+        "%"
+    );
+
+    addText(
+        output,
+        "Recognition: " + row.recognition_method
+    );
+
+    const result = row.result_json || {};
+
+    if (result.requires_teacher_review) {
+
+        const notice = addText(
+            output,
+            "Teacher review required."
+        );
+
+        notice.className = "yellow";
+
+    }
+
+    const assessment = result.assessment || {};
+
+    const questions =
+        assessment.question_results || [];
+
+    if (!questions.length) {
+
+        addText(
+            output,
+            "No detailed question results available."
+        );
+
+    }
+
+    let insightCount = 0;
+
+    for (const question of questions) {
+
+        const detected = result.detected_answers || {};
+
+        const answer = detected[
+            question.question_number
+        ] ?? question.student_answer;
+
+        const unanswered =
+            !answer ||
+            ["UNANSWERED", "MULTIPLE", "-"]
+                .includes(String(answer).toUpperCase()) ||
+            question.status === "unanswered";
+
+        const correct =
+            question.is_correct === true;
+
+        const card = document.createElement("div");
+
+        card.className = "question " + (
+            unanswered ? "unanswered" :
+            correct ? "correct" : "incorrect"
+        );
+
+        addText(
+            card,
+            "Question " +
+            question.question_number,
+            "h3"
+        );
+
+        addText(
+            card,
+            "Student answer: " +
+            (answer || "Unanswered")
+        );
+
+        addText(
+            card,
+            "Correct answer: " +
+            (question.correct_answer || "-")
+        );
+
+        addText(
+            card,
+            "Concept: " +
+            (question.concept || "-")
+        );
+
+        addText(
+            card,
+            question.feedback || ""
+        );
+
+        addText(
+            card,
+            question.explanation || ""
+        );
+
+        output.appendChild(card);
+
+        if (!correct && !unanswered) {
+
+            insightCount++;
+
+            const recommendation =
+                document.createElement("div");
+
+            recommendation.className =
+                "question incorrect";
+
+            addText(
+                recommendation,
+                question.concept || "Learning concept",
+                "h3"
+            );
+
+            addText(
+                recommendation,
+                question.needs_focus
+                    ? "Priority: Needs more practice"
+                    : "Priority: Review recommended"
+            );
+
+            addText(
+                recommendation,
+                question.focus_recommendation ||
+                question.explanation ||
+                "Review this concept."
+            );
+
+            insights.appendChild(recommendation);
+
+        }
+
+    }
+
+    if (!insightCount) {
+
+        addText(
+            insights,
+            "No answered incorrect questions in this report."
+        );
+
+    }
+
+}
+
+
+// ========================================
+// PERFORMANCE CHART
+// ========================================
+
+function drawChart(data) {
+
+    const canvas = $("performanceChart");
+
+    const ratio = window.devicePixelRatio || 1;
+
+    const width = canvas.clientWidth;
+
+    const height = 280;
+
+    if (!width) return;
+
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.scale(ratio, ratio);
+
+    ctx.clearRect(0, 0, width, height);
+
+    const studentIds = new Set(
+        data.map(row => row.student_id)
+    );
+
+    if (studentIds.size !== 1 || !data.length) {
+
+        $("chartDescription").textContent =
+            "Search for one student to view their progress.";
+
+        return;
+
+    }
+
+    $("chartDescription").textContent =
+        "Assessment scores over time";
+
+    const ordered = [...data].sort(
+        (a, b) =>
+            new Date(a.created_at) -
+            new Date(b.created_at)
+    );
+
+    const left = 42;
+    const top = 20;
+    const right = width - 20;
+    const bottom = height - 35;
+
+    ctx.font = "12px Arial";
+
+    for (let score = 0; score <= 100; score += 25) {
+
+        const y = bottom -
+            score / 100 * (bottom - top);
+
+        ctx.strokeStyle = "#26354b";
+
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(right, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#94a3b8";
+
+        ctx.fillText(score + "%", 3, y + 4);
+
+    }
+
+    const points = ordered.map((row, index) => {
+
+        const score = Math.max(
+            0, Math.min(
+                100,
+                Number(row.score_percentage) || 0
+            )
+        );
+
+        return {
+            x: ordered.length === 1
+                ? (left + right) / 2
+                : left + index /
+                    (ordered.length - 1) *
+                    (right - left),
+
+            y: bottom -
+                score / 100 * (bottom - top)
+        };
+
+    });
+
+    ctx.strokeStyle = "#38bdf8";
+
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    points.forEach((point, index) => {
+
+        if (index === 0) {
+
+            ctx.moveTo(point.x, point.y);
+
+        } else {
+
+            ctx.lineTo(point.x, point.y);
+
+        }
+
+    });
+
+    ctx.stroke();
+
+    points.forEach(point => {
+
+        ctx.fillStyle = "#38bdf8";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            point.x,
+            point.y,
+            4,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+    });
+
+}
+
+
+// ========================================
+// INITIALIZATION
+// ========================================
+
+async function initialize() {
+
+    $("loginForm").addEventListener(
+        "submit", login
+    );
+
+    $("logoutButton").onclick = logout;
+
+    $("refreshButton").onclick = loadAssessments;
+
+    $("studentSearch").oninput = () => {
+
+        selectedReport = null;
+
+        $("reportContent").textContent =
+            "Select an assessment.";
+
+        $("learningInsights").textContent =
+            "Select an assessment.";
+
+        renderDashboard();
+
+    };
+
+    window.addEventListener(
+        "resize",
+        () => drawChart(getFilteredRecords())
+    );
+
+    if (!SUPABASE_KEY.startsWith("sb_publishable_")) {
+
+        $("loginStatus").textContent =
+            "Configure your Supabase publishable key.";
+
+        $("loginButton").disabled = true;
+
+        return;
+
+    }
+
+    if (!window.supabase) {
+
+        $("loginStatus").textContent =
+            "Could not load the Supabase library.";
+
+        $("loginButton").disabled = true;
+
+        return;
+
+    }
+
+    client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+            auth: {
+                persistSession: false,
+                autoRefreshToken: true
+            }
+        }
+    );
+
+    client.auth.onAuthStateChange(event => {
+
+        if (event === "SIGNED_OUT") {
+
+            showLogin();
+
+        }
+
+    });
+
+}
+
+initialize();
+
+</script>
+
+</body>
+</html>
