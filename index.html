@@ -1,11 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>VERA | Cloud Dashboard</title>
+<title>VERA | Intelligent Assessment System</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -17,9 +17,9 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
     background: #080f1d;
     color: #e2e8f0;
+    font-family: Arial, sans-serif;
 }
 
 .container {
@@ -33,13 +33,14 @@ h1, h2, h3 {
 }
 
 .brand {
+    color: #38bdf8;
     font-size: 36px;
     font-weight: bold;
-    color: #38bdf8;
 }
 
 .subtitle {
     color: #94a3b8;
+    line-height: 1.6;
 }
 
 .card {
@@ -59,8 +60,8 @@ input {
     width: 100%;
     padding: 13px;
     margin: 8px 0;
-    background: #080f1d;
     color: white;
+    background: #080f1d;
     border: 1px solid #334155;
     border-radius: 8px;
     font-size: 15px;
@@ -70,8 +71,8 @@ button {
     background: #0284c7;
     color: white;
     border: none;
-    padding: 12px 18px;
     border-radius: 8px;
+    padding: 12px 18px;
     cursor: pointer;
     font-weight: bold;
 }
@@ -82,21 +83,21 @@ button:hover {
 
 button:disabled {
     opacity: 0.5;
-    cursor: wait;
-}
-
-.logout {
-    background: #be123c;
+    cursor: not-allowed;
 }
 
 .full-width {
     width: 100%;
 }
 
+.logout {
+    background: #be123c;
+}
+
 .header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
     gap: 15px;
     margin-bottom: 25px;
@@ -105,7 +106,7 @@ button:disabled {
 .metrics {
     display: grid;
     grid-template-columns:
-        repeat(auto-fit, minmax(210px, 1fr));
+        repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px;
 }
 
@@ -115,10 +116,10 @@ button:disabled {
 }
 
 .metric-value {
-    font-size: 34px;
+    color: #38bdf8;
+    font-size: 32px;
     font-weight: bold;
     margin-top: 12px;
-    color: #38bdf8;
 }
 
 .green {
@@ -137,6 +138,22 @@ button:disabled {
     font-size: 14px;
     color: #94a3b8;
     margin: 12px 0;
+    overflow-wrap: anywhere;
+}
+
+.role-badge {
+    display: inline-block;
+    background: #0c4a6e;
+    color: #7dd3fc;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.student-role {
+    background: #14532d;
+    color: #86efac;
 }
 
 .table-wrapper {
@@ -145,13 +162,13 @@ button:disabled {
 
 table {
     width: 100%;
+    min-width: 720px;
     border-collapse: collapse;
-    min-width: 750px;
 }
 
 th, td {
-    text-align: left;
     padding: 14px;
+    text-align: left;
     border-bottom: 1px solid #26354b;
 }
 
@@ -172,18 +189,18 @@ tr:hover {
 }
 
 .progress-fill {
-    background: #22c55e;
-    height: 100%;
     width: 0%;
+    height: 100%;
+    background: #22c55e;
     transition: width 0.5s;
 }
 
 .question {
     padding: 15px;
+    margin: 10px 0;
     background: #080f1d;
     border-radius: 10px;
-    margin: 10px 0;
-    line-height: 1.7;
+    line-height: 1.6;
     overflow-wrap: anywhere;
 }
 
@@ -200,9 +217,9 @@ tr:hover {
 }
 
 canvas {
+    display: block;
     width: 100%;
     height: 280px;
-    display: block;
 }
 
 .hidden {
@@ -217,6 +234,7 @@ footer {
 }
 
 @media (max-width: 600px) {
+
     .container {
         padding: 14px;
     }
@@ -228,7 +246,15 @@ footer {
     .card {
         padding: 16px;
     }
+
 }
+
+
+#onlineLearning .learning-module { background:#080f1d; border:1px solid #26354b; padding:18px; border-radius:12px; margin:16px 0; line-height:1.6; }
+#onlineLearning .practice-choice { display:block; width:100%; text-align:left; margin:8px 0; background:#26354b; }
+#onlineLearning .practice-choice:hover { background:#334155; }
+#onlineLearning .practice-choice:disabled { cursor:default; }
+#onlineLearning .concept-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
 
 </style>
 </head>
@@ -249,7 +275,11 @@ footer {
 
         <hr style="border-color:#26354b">
 
-        <h2>Teacher Login</h2>
+        <h2>Welcome to VERA</h2>
+
+        <p class="subtitle">
+            Sign in to your teacher or student account.
+        </p>
 
         <form id="loginForm">
 
@@ -271,22 +301,25 @@ footer {
 
             <button
                 id="loginButton"
-                class="full-width"
                 type="submit"
+                class="full-width"
+                disabled
             >
                 Sign In
             </button>
 
         </form>
 
-        <p id="loginStatus" class="status"></p>
+        <p id="loginStatus" class="status">
+            Initializing VERA Cloud...
+        </p>
 
     </div>
 
 </div>
 
 
-<!-- ONLINE DASHBOARD -->
+<!-- DASHBOARD -->
 
 <div id="dashboardSection"
      class="container hidden">
@@ -295,7 +328,7 @@ footer {
 
         <div>
 
-            <div class="brand">
+            <div class="brand" id="dashboardTitle">
                 VERA Cloud
             </div>
 
@@ -303,8 +336,11 @@ footer {
                 Intelligent Assessment & Learning Analytics
             </p>
 
-            <div id="teacherEmail"
-                 class="status"></div>
+            <span id="roleBadge"
+                  class="role-badge">
+            </span>
+
+            <p id="userInfo" class="status"></p>
 
         </div>
 
@@ -323,9 +359,7 @@ footer {
 
     </div>
 
-    <p id="cloudStatus" class="status">
-        Connecting to VERA Cloud...
-    </p>
+    <p id="cloudStatus" class="status"></p>
 
 
     <!-- METRICS -->
@@ -333,43 +367,58 @@ footer {
     <div class="metrics">
 
         <div class="card">
+
             <div class="metric-label">
                 Assessments
             </div>
+
             <div id="totalAssessments"
                  class="metric-value">0</div>
+
         </div>
 
-        <div class="card">
+        <div id="studentsMetric" class="card">
+
             <div class="metric-label">
                 Students
             </div>
+
             <div id="totalStudents"
                  class="metric-value">0</div>
+
         </div>
 
         <div class="card">
+
             <div class="metric-label">
                 Average Score
             </div>
+
             <div id="averageScore"
                  class="metric-value">0%</div>
+
         </div>
 
         <div class="card">
+
             <div class="metric-label">
                 Correct Answers
             </div>
+
             <div id="correctAnswers"
                  class="metric-value green">0</div>
+
         </div>
 
         <div class="card">
+
             <div class="metric-label">
                 Incorrect Answers
             </div>
+
             <div id="incorrectAnswers"
                  class="metric-value red">0</div>
+
         </div>
 
     </div>
@@ -379,12 +428,15 @@ footer {
 
     <div class="card">
 
-        <h2>Overall Performance</h2>
+        <h2 id="performanceTitle">
+            Overall Performance
+        </h2>
 
         <div class="progress-track">
+
             <div id="performanceBar"
-                 class="progress-fill">
-            </div>
+                 class="progress-fill"></div>
+
         </div>
 
         <p id="performanceText">
@@ -394,15 +446,16 @@ footer {
     </div>
 
 
-    <!-- STUDENT FILTER -->
+    <!-- TEACHER SEARCH -->
 
-    <div class="card">
+    <div id="studentSearchSection"
+         class="card">
 
         <h2>Student Search</h2>
 
         <input
             id="studentSearch"
-            placeholder="Enter Student ID, e.g. VERA-001"
+            placeholder="Enter Student ID"
         >
 
     </div>
@@ -415,9 +468,7 @@ footer {
         <h2>Performance Trend</h2>
 
         <p id="chartDescription"
-           class="subtitle">
-            Search for a student to view their progress.
-        </p>
+           class="subtitle"></p>
 
         <canvas id="performanceChart"></canvas>
 
@@ -428,13 +479,16 @@ footer {
 
     <div class="card">
 
-        <h2>Assessment History</h2>
+        <h2 id="historyTitle">
+            Assessment History
+        </h2>
 
         <div class="table-wrapper">
 
             <table>
 
                 <thead>
+
                     <tr>
                         <th>ID</th>
                         <th>Student</th>
@@ -445,6 +499,7 @@ footer {
                         <th>Date</th>
                         <th>Report</th>
                     </tr>
+
                 </thead>
 
                 <tbody id="assessmentTable"></tbody>
@@ -456,33 +511,46 @@ footer {
     </div>
 
 
-    <!-- DETAILED REPORT -->
+    <!-- REPORT -->
 
     <div class="card">
 
         <h2>Detailed Assessment Report</h2>
 
         <div id="reportContent">
-            Select an assessment to view its report.
+            Select an assessment.
         </div>
 
     </div>
 
 
-    <!-- LEARNING INSIGHTS -->
+    <!-- INSIGHTS -->
 
     <div class="card">
 
         <h2>Personalized Learning Insights</h2>
 
         <div id="learningInsights">
-            Select an assessment to view recommendations.
+            Select an assessment.
         </div>
 
     </div>
 
+    <section id="onlineLearning" class="card hidden">
+        <h2>VERA Adaptive Learning</h2>
+        <p class="subtitle">Exam-based concept analysis and personalized revision. Practice results are separate from exam grades.</p>
+        <button id="onlineLearningRefresh" type="button">Refresh Learning & Practice</button>
+        <p id="onlineLearningStatus" class="status" aria-live="polite"></p>
+        <div id="onlineConcepts"></div>
+        <h2>Personalized Learning Plan</h2>
+        <div id="onlineModules"></div>
+        <h2>Practice Progress</h2>
+        <p id="onlinePracticeStatus" class="status" aria-live="polite"></p>
+        <div id="onlinePracticeProgress"></div>
+    </section>
+
     <footer>
-        VERA | Cloud Assessment System
+        VERA | Intelligent Assessment System
         <br>
         PaddleOCR · OpenCV · FastAPI · Supabase
     </footer>
@@ -493,9 +561,8 @@ footer {
 <script>
 
 // ========================================
-// SUPABASE CONFIGURATION
+// CONFIGURATION
 // ========================================
-
 
 const SUPABASE_URL =
     "https://dyfxmncyejzyfpyhtzls.supabase.co";
@@ -505,18 +572,35 @@ const SUPABASE_KEY =
 
 let client = null;
 
+let currentUser = null;
+let currentRole = null;
+let currentStudentId = null;
+
 let records = [];
 let selectedReport = null;
 let refreshTimer = null;
 let loading = false;
-let activeUserId = null;
 let sessionVersion = 0;
 
 const $ = id => document.getElementById(id);
 
 
 // ========================================
-// AUTHENTICATION
+// LOGIN STATUS
+// ========================================
+
+function loginStatus(message, type = "") {
+
+    $("loginStatus").textContent = message;
+
+    $("loginStatus").className =
+        "status " + type;
+
+}
+
+
+// ========================================
+// LOGIN
 // ========================================
 
 async function login(event) {
@@ -527,27 +611,47 @@ async function login(event) {
 
     $("loginButton").disabled = true;
 
-    $("loginStatus").textContent =
-        "Signing in...";
+    loginStatus("Signing in...");
 
     try {
 
         const { data, error } =
             await client.auth.signInWithPassword({
+
                 email: $("email").value.trim(),
+
                 password: $("password").value
+
             });
 
         if (error) throw error;
 
+        if (!data.user) {
+
+            throw new Error(
+                "Authentication failed."
+            );
+
+        }
+
         $("password").value = "";
 
-        await authorizeTeacher(data.user);
+        loginStatus(
+            "Detecting account permissions..."
+        );
+
+        await detectUserRole(data.user);
 
     } catch (error) {
 
-        $("loginStatus").textContent =
-            error.message || "Login failed.";
+        console.error("Login failed:", error);
+
+        showLogin();
+
+        loginStatus(
+            error.message || "Login failed.",
+            "red"
+        );
 
     } finally {
 
@@ -558,54 +662,181 @@ async function login(event) {
 }
 
 
-async function authorizeTeacher(user) {
+// ========================================
+// ROLE DETECTION
+// ========================================
 
-    const { data, error } = await client
+async function detectUserRole(user) {
+
+    const teacherResult = await client
         .from("teachers")
         .select("user_id")
         .eq("user_id", user.id)
         .maybeSingle();
 
-    if (error || !data) {
+    const studentResult = await client
+        .from("students")
+        .select("user_id, student_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (
+        teacherResult.error ||
+        studentResult.error
+    ) {
 
         await client.auth.signOut();
 
-        showLogin();
-
-        $("loginStatus").textContent =
-            "Access denied or teacher verification unavailable.";
-
-        return;
+        throw new Error(
+            "Account permissions could not be verified."
+        );
 
     }
 
-    activeUserId = user.id;
+    if (
+        teacherResult.data &&
+        studentResult.data
+    ) {
 
-    $("teacherEmail").textContent =
-        user.email || "Teacher";
+        await client.auth.signOut();
 
-    $("loginSection").classList.add("hidden");
+        throw new Error(
+            "Account has conflicting roles."
+        );
 
-    $("dashboardSection").classList.remove("hidden");
+    }
 
-    await loadAssessments();
+    if (teacherResult.data) {
 
-    clearInterval(refreshTimer);
+        currentRole = "teacher";
 
-    refreshTimer = setInterval(
-        loadAssessments, 10000
-    );
+        currentStudentId = null;
+
+    } else if (studentResult.data) {
+
+        currentRole = "student";
+
+        currentStudentId =
+            studentResult.data.student_id;
+
+    } else {
+
+        await client.auth.signOut();
+
+        throw new Error(
+            "Access denied. No authorized role found."
+        );
+
+    }
+
+    currentUser = user;
+
+    sessionVersion++;
+
+    await showDashboard();
 
 }
 
 
+// ========================================
+// DASHBOARD ROLE CONFIGURATION
+// ========================================
+
+async function showDashboard() {
+
+    const isTeacher =
+        currentRole === "teacher";
+
+    $("dashboardTitle").textContent =
+        isTeacher
+            ? "VERA Teacher Portal"
+            : "VERA Student Portal";
+
+    $("roleBadge").textContent =
+        isTeacher ? "TEACHER" : "STUDENT";
+
+    $("roleBadge").className =
+        isTeacher
+            ? "role-badge"
+            : "role-badge student-role";
+
+    $("userInfo").textContent =
+        isTeacher
+            ? currentUser.email
+            : "Student ID: " + currentStudentId;
+
+    $("studentsMetric").classList.toggle(
+        "hidden",
+        !isTeacher
+    );
+
+    $("studentSearchSection")
+        .classList.toggle(
+            "hidden",
+            !isTeacher
+        );
+
+    $("performanceTitle").textContent =
+        isTeacher
+            ? "Overall Performance"
+            : "My Performance";
+
+    $("historyTitle").textContent =
+        isTeacher
+            ? "Assessment History"
+            : "My Assessments";
+
+    $("loginSection").classList.add(
+        "hidden"
+    );
+
+    $("dashboardSection").classList.remove(
+        "hidden"
+    );
+
+    clearInterval(refreshTimer);
+
+    const version = sessionVersion;
+
+    await loadAssessments();
+
+    if (version === sessionVersion && currentRole === "student") {
+        renderOnlineLearning();
+        await loadOnlinePractice();
+    }
+
+    if (
+        currentUser &&
+        version === sessionVersion
+    ) {
+
+        refreshTimer = setInterval(
+            loadAssessments,
+            10000
+        );
+
+    }
+
+}
+
+
+// ========================================
+// CLEAR SESSION
+// ========================================
+
 function showLogin() {
+
+    resetOnlineLearning();
 
     sessionVersion++;
 
-    activeUserId = null;
-
     clearInterval(refreshTimer);
+
+    refreshTimer = null;
+
+    currentUser = null;
+    currentRole = null;
+    currentStudentId = null;
 
     records = [];
 
@@ -619,27 +850,78 @@ function showLogin() {
     $("learningInsights").textContent =
         "Select an assessment.";
 
-    $("teacherEmail").textContent = "";
-
     $("studentSearch").value = "";
 
-    $("dashboardSection").classList.add("hidden");
+    $("password").value = "";
 
-    $("loginSection").classList.remove("hidden");
+    $("userInfo").textContent = "";
+
+    $("totalAssessments").textContent = "0";
+
+    $("totalStudents").textContent = "0";
+
+    $("averageScore").textContent = "0%";
+
+    $("correctAnswers").textContent = "0";
+
+    $("incorrectAnswers").textContent = "0";
+
+    $("performanceBar").style.width = "0%";
+
+    $("performanceText").textContent = "";
+
+    $("cloudStatus").textContent = "";
+
+    $("performanceChart").width =
+        $("performanceChart").width;
+
+    $("dashboardSection").classList.add(
+        "hidden"
+    );
+
+    $("loginSection").classList.remove(
+        "hidden"
+    );
 
 }
 
 
+// ========================================
+// LOGOUT
+// ========================================
+
 async function logout() {
 
-    showLogin();
+    $("logoutButton").disabled = true;
 
-    const { error } =
-        await client.auth.signOut();
+    try {
 
-    $("loginStatus").textContent = error
-        ? "Logout could not be completed. Please retry."
-        : "Logged out successfully.";
+        const { error } =
+            await client.auth.signOut();
+
+        if (error) throw error;
+
+        showLogin();
+
+        loginStatus(
+            "Logged out successfully.",
+            "green"
+        );
+
+    } catch (error) {
+
+        showLogin();
+
+        loginStatus(
+            "Logout could not be confirmed. Close this page.",
+            "red"
+        );
+
+    } finally {
+
+        $("logoutButton").disabled = false;
+
+    }
 
 }
 
@@ -650,7 +932,7 @@ async function logout() {
 
 async function loadAssessments() {
 
-    if (!activeUserId || loading) return;
+    if (!currentUser || loading) return;
 
     loading = true;
 
@@ -666,24 +948,42 @@ async function loadAssessments() {
 
         while (true) {
 
-            const { data, error } = await client
+            let query = client
                 .from("assessments")
                 .select("*")
                 .order("created_at", {
                     ascending: false
                 })
                 .order("id")
-                .range(start, start + pageSize - 1);
+                .range(
+                    start,
+                    start + pageSize - 1
+                );
 
-            if (version !== sessionVersion) return;
+            if (currentRole === "student") {
+
+                query = query.eq(
+                    "student_id",
+                    currentStudentId
+                );
+
+            }
+
+            const { data, error } =
+                await query;
+
+            if (
+                version !== sessionVersion
+            ) return;
 
             if (error) throw error;
 
             all.push(...(data || []));
 
-            if (!data || data.length < pageSize) {
-                break;
-            }
+            if (
+                !data ||
+                data.length < pageSize
+            ) break;
 
             start += pageSize;
 
@@ -705,16 +1005,37 @@ async function loadAssessments() {
                 row => row.id === selectedReport
             );
 
-            if (updated) renderReport(updated);
+            if (updated) {
+
+                renderReport(updated);
+
+            } else {
+
+                clearReport();
+
+            }
 
         }
 
     } catch (error) {
 
-        if (version !== sessionVersion) return;
+        if (
+            version !== sessionVersion
+        ) return;
+
+        console.error(
+            "Cloud load failed:",
+            error
+        );
+
+        records = [];
+
+        clearReport();
+
+        renderDashboard();
 
         $("cloudStatus").textContent =
-            "Cloud refresh failed. Showing last loaded data.";
+            "Could not load authorized assessments.";
 
     } finally {
 
@@ -726,24 +1047,40 @@ async function loadAssessments() {
 
 
 // ========================================
-// DASHBOARD RENDERING
+// FILTER DATA
 // ========================================
 
 function getFilteredRecords() {
+
+    if (currentRole === "student") {
+
+        return records.filter(
+            row =>
+                row.student_id ===
+                currentStudentId
+        );
+
+    }
 
     const query = $("studentSearch")
         .value.trim().toUpperCase();
 
     if (!query) return records;
 
-    return records.filter(record =>
-        String(record.student_id)
+    return records.filter(row =>
+
+        String(row.student_id)
             .toUpperCase()
             .includes(query)
+
     );
 
 }
 
+
+// ========================================
+// RENDER DASHBOARD
+// ========================================
 
 function renderDashboard() {
 
@@ -765,23 +1102,26 @@ function renderDashboard() {
         0
     );
 
-    const totalQuestions = filtered.reduce(
+    const total = filtered.reduce(
         (sum, row) =>
             sum + Number(row.total_questions || 0),
         0
     );
 
     const average = filtered.length
+
         ? filtered.reduce(
             (sum, row) =>
-                sum + Number(row.score_percentage || 0),
+                sum + Number(
+                    row.score_percentage || 0
+                ),
             0
-          ) / filtered.length
+        ) / filtered.length
+
         : 0;
 
-    const accuracy = totalQuestions
-        ? correct / totalQuestions * 100
-        : 0;
+    const accuracy =
+        total ? correct / total * 100 : 0;
 
     $("totalAssessments").textContent =
         filtered.length;
@@ -792,16 +1132,21 @@ function renderDashboard() {
     $("averageScore").textContent =
         average.toFixed(2) + "%";
 
-    $("correctAnswers").textContent = correct;
+    $("correctAnswers").textContent =
+        correct;
 
-    $("incorrectAnswers").textContent = incorrect;
+    $("incorrectAnswers").textContent =
+        incorrect;
 
     $("performanceBar").style.width =
-        Math.max(0, Math.min(100, accuracy)) + "%";
+        Math.max(
+            0,
+            Math.min(100, accuracy)
+        ) + "%";
 
     $("performanceText").textContent =
         correct + " correct out of " +
-        totalQuestions + " questions (" +
+        total + " questions (" +
         accuracy.toFixed(2) + "%)";
 
     renderTable(filtered);
@@ -812,7 +1157,7 @@ function renderDashboard() {
 
 
 // ========================================
-// ASSESSMENT TABLE
+// TABLE
 // ========================================
 
 function renderTable(data) {
@@ -821,23 +1166,55 @@ function renderTable(data) {
 
     table.replaceChildren();
 
+    if (!data.length) {
+
+        const tr = document.createElement("tr");
+
+        const td = document.createElement("td");
+
+        td.colSpan = 8;
+
+        td.textContent =
+            "No assessment records found.";
+
+        tr.appendChild(td);
+
+        table.appendChild(tr);
+
+        return;
+
+    }
+
     for (const row of data) {
 
         const tr = document.createElement("tr");
 
         const values = [
+
             row.local_id,
+
             row.student_id,
+
             row.recognition_method,
-            Number(row.score_percentage).toFixed(2) + "%",
+
+            Number(
+                row.score_percentage
+            ).toFixed(2) + "%",
+
             row.correct_answers,
+
             row.incorrect_answers,
-            new Date(row.created_at).toLocaleString()
+
+            new Date(
+                row.created_at
+            ).toLocaleString()
+
         ];
 
         for (const value of values) {
 
-            const td = document.createElement("td");
+            const td =
+                document.createElement("td");
 
             td.textContent = value ?? "-";
 
@@ -845,9 +1222,11 @@ function renderTable(data) {
 
         }
 
-        const action = document.createElement("td");
+        const action =
+            document.createElement("td");
 
-        const button = document.createElement("button");
+        const button =
+            document.createElement("button");
 
         button.textContent = "View";
 
@@ -875,12 +1254,13 @@ function renderTable(data) {
 
 
 // ========================================
-// DETAILED REPORT
+// REPORT HELPERS
 // ========================================
 
 function addText(parent, text, tag = "p") {
 
-    const element = document.createElement(tag);
+    const element =
+        document.createElement(tag);
 
     element.textContent = text;
 
@@ -891,7 +1271,29 @@ function addText(parent, text, tag = "p") {
 }
 
 
+function clearReport() {
+
+    selectedReport = null;
+
+    $("reportContent").textContent =
+        "Select an assessment.";
+
+    $("learningInsights").textContent =
+        "Select an assessment.";
+
+}
+
+
+// ========================================
+// DETAILED REPORT
+// ========================================
+
 function renderReport(row) {
+
+    if (
+        currentRole === "student" &&
+        row.student_id !== currentStudentId
+    ) return;
 
     const output = $("reportContent");
 
@@ -910,47 +1312,61 @@ function renderReport(row) {
     addText(
         output,
         "Score: " +
-        Number(row.score_percentage).toFixed(2) +
-        "%"
+        Number(
+            row.score_percentage
+        ).toFixed(2) + "%"
     );
 
     addText(
         output,
-        "Recognition: " + row.recognition_method
+        "Correct answers: " +
+        row.correct_answers
+    );
+
+    addText(
+        output,
+        "Incorrect answers: " +
+        row.incorrect_answers
+    );
+
+    addText(
+        output,
+        "Unanswered: " +
+        row.unanswered_questions
     );
 
     const result = row.result_json || {};
 
     if (result.requires_teacher_review) {
 
-        const notice = addText(
+        addText(
             output,
             "Teacher review required."
-        );
-
-        notice.className = "yellow";
+        ).className = "yellow";
 
     }
 
-    const assessment = result.assessment || {};
+    const assessment =
+        result.assessment || {};
 
     const questions =
         assessment.question_results || [];
+
+    let insightCount = 0;
 
     if (!questions.length) {
 
         addText(
             output,
-            "No detailed question results available."
+            "No detailed results available."
         );
 
     }
 
-    let insightCount = 0;
-
     for (const question of questions) {
 
-        const detected = result.detected_answers || {};
+        const detected =
+            result.detected_answers || {};
 
         const answer = detected[
             question.question_number
@@ -959,17 +1375,25 @@ function renderReport(row) {
         const unanswered =
             !answer ||
             ["UNANSWERED", "MULTIPLE", "-"]
-                .includes(String(answer).toUpperCase()) ||
+                .includes(
+                    String(answer).toUpperCase()
+                ) ||
             question.status === "unanswered";
 
         const correct =
             question.is_correct === true;
 
-        const card = document.createElement("div");
+        const card =
+            document.createElement("div");
 
         card.className = "question " + (
-            unanswered ? "unanswered" :
-            correct ? "correct" : "incorrect"
+
+            unanswered
+                ? "unanswered"
+                : correct
+                    ? "correct"
+                    : "incorrect"
+
         );
 
         addText(
@@ -981,7 +1405,7 @@ function renderReport(row) {
 
         addText(
             card,
-            "Student answer: " +
+            "Your answer: " +
             (answer || "Unanswered")
         );
 
@@ -1021,7 +1445,8 @@ function renderReport(row) {
 
             addText(
                 recommendation,
-                question.concept || "Learning concept",
+                question.concept ||
+                "Learning concept",
                 "h3"
             );
 
@@ -1039,7 +1464,9 @@ function renderReport(row) {
                 "Review this concept."
             );
 
-            insights.appendChild(recommendation);
+            insights.appendChild(
+                recommendation
+            );
 
         }
 
@@ -1049,7 +1476,9 @@ function renderReport(row) {
 
         addText(
             insights,
-            "No answered incorrect questions in this report."
+            questions.length
+                ? "No answered incorrect questions in this report."
+                : "No learning insights available."
         );
 
     }
@@ -1065,31 +1494,40 @@ function drawChart(data) {
 
     const canvas = $("performanceChart");
 
-    const ratio = window.devicePixelRatio || 1;
-
     const width = canvas.clientWidth;
 
     const height = 280;
 
+    const ratio =
+        window.devicePixelRatio || 1;
+
     if (!width) return;
 
     canvas.width = width * ratio;
+
     canvas.height = height * ratio;
 
     const ctx = canvas.getContext("2d");
 
     ctx.scale(ratio, ratio);
 
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(
+        0, 0, width, height
+    );
 
-    const studentIds = new Set(
+    const students = new Set(
         data.map(row => row.student_id)
     );
 
-    if (studentIds.size !== 1 || !data.length) {
+    if (
+        !data.length ||
+        students.size !== 1
+    ) {
 
         $("chartDescription").textContent =
-            "Search for one student to view their progress.";
+            currentRole === "student"
+                ? "No assessment data available."
+                : "Search for one student to view their progress.";
 
         return;
 
@@ -1105,51 +1543,74 @@ function drawChart(data) {
     );
 
     const left = 42;
-    const top = 20;
     const right = width - 20;
+    const top = 20;
     const bottom = height - 35;
 
     ctx.font = "12px Arial";
 
-    for (let score = 0; score <= 100; score += 25) {
+    for (
+        let score = 0;
+        score <= 100;
+        score += 25
+    ) {
 
         const y = bottom -
-            score / 100 * (bottom - top);
+            score / 100 *
+            (bottom - top);
 
         ctx.strokeStyle = "#26354b";
 
         ctx.beginPath();
+
         ctx.moveTo(left, y);
+
         ctx.lineTo(right, y);
+
         ctx.stroke();
 
         ctx.fillStyle = "#94a3b8";
 
-        ctx.fillText(score + "%", 3, y + 4);
+        ctx.fillText(
+            score + "%",
+            3,
+            y + 4
+        );
 
     }
 
-    const points = ordered.map((row, index) => {
+    const points = ordered.map(
+        (row, index) => {
 
-        const score = Math.max(
-            0, Math.min(
-                100,
-                Number(row.score_percentage) || 0
-            )
-        );
+            const score = Math.max(
+                0,
+                Math.min(
+                    100,
+                    Number(
+                        row.score_percentage
+                    ) || 0
+                )
+            );
 
-        return {
-            x: ordered.length === 1
-                ? (left + right) / 2
-                : left + index /
-                    (ordered.length - 1) *
-                    (right - left),
+            return {
 
-            y: bottom -
-                score / 100 * (bottom - top)
-        };
+                x: ordered.length === 1
 
-    });
+                    ? (left + right) / 2
+
+                    : left +
+                        index /
+                        (ordered.length - 1) *
+                        (right - left),
+
+                y: bottom -
+                    score / 100 *
+                    (bottom - top)
+
+            };
+
+        }
+    );
 
     ctx.strokeStyle = "#38bdf8";
 
@@ -1161,11 +1622,17 @@ function drawChart(data) {
 
         if (index === 0) {
 
-            ctx.moveTo(point.x, point.y);
+            ctx.moveTo(
+                point.x,
+                point.y
+            );
 
         } else {
 
-            ctx.lineTo(point.x, point.y);
+            ctx.lineTo(
+                point.x,
+                point.y
+            );
 
         }
 
@@ -1198,80 +1665,282 @@ function drawChart(data) {
 // INITIALIZATION
 // ========================================
 
-async function initialize() {
+function initialize() {
 
-    $("loginForm").addEventListener(
-        "submit", login
-    );
-
-    $("logoutButton").onclick = logout;
-
-    $("refreshButton").onclick = loadAssessments;
-
-    $("studentSearch").oninput = () => {
-
-        selectedReport = null;
-
-        $("reportContent").textContent =
-            "Select an assessment.";
-
-        $("learningInsights").textContent =
-            "Select an assessment.";
-
-        renderDashboard();
-
-    };
-
-    window.addEventListener(
-        "resize",
-        () => drawChart(getFilteredRecords())
-    );
-
-    if (!SUPABASE_KEY.startsWith("sb_publishable_")) {
-
-        $("loginStatus").textContent =
-            "Configure your Supabase publishable key.";
+    try {
 
         $("loginButton").disabled = true;
 
-        return;
+        $("loginForm").addEventListener(
+            "submit",
+            login
+        );
 
-    }
+        $("logoutButton").onclick =
+            logout;
 
-    if (!window.supabase) {
+        $("refreshButton").onclick =
+            loadAssessments;
 
-        $("loginStatus").textContent =
-            "Could not load the Supabase library.";
+        $("studentSearch").oninput = () => {
 
-        $("loginButton").disabled = true;
+            clearReport();
 
-        return;
+            renderDashboard();
 
-    }
+        };
 
-    client = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY,
-        {
-            auth: {
-                persistSession: false,
-                autoRefreshToken: true
+        window.addEventListener(
+            "resize",
+            () => {
+
+                if (currentUser) {
+
+                    drawChart(
+                        getFilteredRecords()
+                    );
+
+                }
+
             }
+        );
+
+        if (
+            !SUPABASE_URL.startsWith(
+                "https://"
+            )
+        ) {
+
+            throw new Error(
+                "Invalid Supabase URL."
+            );
+
         }
-    );
 
-    client.auth.onAuthStateChange(event => {
+        if (
+            !SUPABASE_KEY.startsWith(
+                "sb_publishable_"
+            )
+        ) {
 
-        if (event === "SIGNED_OUT") {
-
-            showLogin();
+            throw new Error(
+                "Invalid publishable key."
+            );
 
         }
 
-    });
+        if (
+            !window.supabase ||
+            typeof window.supabase.createClient
+                !== "function"
+        ) {
+
+            throw new Error(
+                "Supabase library failed to load."
+            );
+
+        }
+
+        client = window.supabase.createClient(
+
+            SUPABASE_URL,
+
+            SUPABASE_KEY,
+
+            {
+
+                auth: {
+
+                    persistSession: false,
+
+                    autoRefreshToken: true,
+
+                    detectSessionInUrl: false
+
+                }
+
+            }
+
+        );
+
+        client.auth.onAuthStateChange(
+            event => {
+
+                if (
+                    event === "SIGNED_OUT"
+                ) {
+
+                    showLogin();
+
+                }
+
+            }
+        );
+
+        loginStatus(
+            "VERA Cloud is ready. Please sign in.",
+            "green"
+        );
+
+        $("loginButton").disabled = false;
+
+        console.log(
+            "VERA Cloud initialized successfully."
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        loginStatus(
+            error.message ||
+            "Initialization failed.",
+            "red"
+        );
+
+    }
 
 }
 
+
+// Online learning: no device secrets or client-side grading.
+const onlineContent = {"Chlorophyll Function": ["Understanding Chlorophyll", "Chlorophyll is a green pigment that absorbs light energy for photosynthesis.", "Confusing chlorophyll with chloroplasts or water absorption.", "Identify chlorophyll inside chloroplasts; review light absorption.", "What is the main function of chlorophyll?", ["Absorb light energy", "Transport water", "Store genetic information", "Absorb minerals from soil"]], "Plant Transport Tissues": ["Xylem and Phloem", "Xylem transports water and minerals; phloem transports sugars between sources and sinks.", "Reversing the functions of xylem and phloem.", "Compare both tissues and trace water and sugar movement.", "Which tissue transports water from roots toward leaves?", ["Phloem", "Xylem", "Epidermis", "Mesophyll"]], "Chemical Nomenclature": ["Naming Chemical Compounds", "Prefixes in binary molecular compound names indicate atom counts.", "Using incorrect prefixes or reversing atom counts.", "Review numerical prefixes and practice reading chemical subscripts.", "What is the name of N2O3?", ["Nitrogen oxide", "Dinitrogen dioxide", "Dinitrogen trioxide", "Trinitrogen dioxide"]], "Cell Biology": ["The Cell and Its Nucleus", "The nucleus contains most genetic material in a eukaryotic cell.", "Confusing the nucleus with other organelles.", "Review cell structure and compare organelle functions.", "Which organelle contains most genetic material in a eukaryotic cell?", ["Ribosome", "Cell membrane", "Golgi apparatus", "Nucleus"]]};
+let onlineRequest = 0;
+let onlinePracticeRequest = 0;
+function resetOnlineLearning() {
+    onlineRequest++;
+    onlinePracticeRequest++;
+    $("onlineLearning").classList.add("hidden");
+    for (const id of ["onlineConcepts","onlineModules","onlinePracticeProgress","onlineLearningStatus","onlinePracticeStatus"]) $(id).replaceChildren();
+    $("onlineLearningRefresh").disabled = false;
+}
+function onlineConceptAnalysis(rows) {
+    const stats = new Map();
+    for (const row of rows) {
+        if (row.student_id !== currentStudentId) continue;
+        const r = row.result_json || {};
+        if (r.requires_teacher_review || (row.recognition_method === "OCR" && !r.teacher_reviewed)) continue;
+        for (const q of r.assessment?.question_results || []) {
+            if (!q.concept || typeof q.is_correct !== "boolean" || q.requires_teacher_review || ["UNANSWERED","MULTIPLE","REVIEW_REQUIRED"].includes(String(q.status).toUpperCase())) continue;
+            const s = stats.get(q.concept) || {concept:q.concept,total:0,correct:0};
+            s.total++; if(q.is_correct) s.correct++;
+            stats.set(q.concept,s);
+        }
+    }
+    return [...stats.values()].map(s=> {
+        s.accuracy = Math.round(10000*s.correct/s.total)/100;
+        s.level = s.total < 2 ? "INSUFFICIENT_DATA" : s.accuracy >= 80 ? "STRONG" : s.total-s.correct >= 2 && s.accuracy < 50 ? "NEEDS_FOCUS" : "DEVELOPING";
+        return s;
+    }).sort((a,b)=>a.accuracy-b.accuracy);
+}
+async function onlineFetchRows(table, fields, studentId, valid) {
+    const rows=[];
+    const pageSize=500;
+    for(let start=0;;start+=pageSize) {
+        const {data,error}=await client.from(table).select(fields).eq("student_id",studentId).order("attempt_id").range(start,start+pageSize-1);
+        if(!valid()) return null;
+        if(error) throw error;
+        rows.push(...(data||[]));
+        if(!data || data.length<pageSize) return rows;
+    }
+}
+async function loadOnlinePractice() {
+    const version=sessionVersion, studentId=currentStudentId, request=++onlinePracticeRequest;
+    const valid=()=>version===sessionVersion && request===onlinePracticeRequest && currentRole==="student" && currentStudentId===studentId;
+    if(!valid() || !studentId) return;
+    $("onlinePracticeStatus").textContent="Loading practice progress...";
+    try {
+        const local=await onlineFetchRows("practice_attempts","attempt_id,concept,is_correct",studentId,valid);
+        if(!valid()) return;
+        const online=await onlineFetchRows("online_practice_attempts","attempt_id,concept,is_correct",studentId,valid);
+        if(!valid()) return;
+        const all=[...local,...online];
+        const stats=new Map();
+        for(const row of all) {
+            const s=stats.get(row.concept)||{total:0,correct:0};
+            s.total++; if(row.is_correct===true) s.correct++;
+            stats.set(row.concept,s);
+        }
+        const output=$("onlinePracticeProgress"); output.replaceChildren();
+        const correct=all.filter(r=>r.is_correct===true).length;
+        addText(output,`Total Attempts: ${all.length} | Correct: ${correct} | Incorrect: ${all.length-correct}`,"h3");
+        addText(output,`Practice Accuracy: ${all.length?(100*correct/all.length).toFixed(2)+"%":"No attempts"}`);
+        addText(output,`Device attempts: ${local.length} | Online attempts: ${online.length}`);
+        for(const [concept,s] of stats) {
+            const card=document.createElement("div"); card.className="question";
+            addText(card,concept,"h3"); addText(card,`${s.correct}/${s.total} correct · ${(100*s.correct/s.total).toFixed(2)}%`); output.appendChild(card);
+        }
+        $("onlinePracticeStatus").textContent="Cloud practice progress loaded.";
+    } catch(error) {
+        if(!valid()) return;
+        $("onlinePracticeProgress").replaceChildren();
+        $("onlinePracticeStatus").textContent="Practice data unavailable. Check cloud setup and permissions.";
+    }
+}
+function renderOnlineQuiz(parent, concept, content, valid) {
+    addText(parent,content[4],"h3");
+    const feedback=addText(parent,"Choose an answer."); feedback.setAttribute("aria-live","polite");
+    const buttons=[]; let busy=false, solved=false, pending=null; const completed=new Set();
+    content[5].forEach((option,index)=> {
+        const letter="ABCD"[index]; const b=document.createElement("button"); b.type="button"; b.className="practice-choice"; b.textContent=letter+". "+option;
+        buttons.push(b); parent.appendChild(b);
+        b.onclick=async()=> {
+            if(!valid()||busy||solved||completed.has(letter)||(pending&&pending.letter!==letter)) return;
+            pending=pending||{id:crypto.randomUUID(),letter}; busy=true; $("onlineLearningRefresh").disabled=true;
+            buttons.forEach(x=>x.disabled=true); feedback.textContent="Saving answer...";
+            try {
+                const {data,error}=await client.rpc("vera_submit_online_practice",{p_attempt_id:pending.id,p_concept:concept,p_selected_answer:letter});
+                if(!valid()) return;
+                if(error||typeof data?.is_correct!=="boolean") throw new Error("Save failed");
+                pending=null; completed.add(letter); solved=data.is_correct;
+                b.style.background=solved?"#166534":"#991b1b";
+                feedback.textContent=data.feedback+" | Attempt saved.";
+                feedback.className=solved?"green":"red";
+                buttons.forEach((x,i)=>x.disabled=solved||completed.has("ABCD"[i]));
+                await loadOnlinePractice();
+            } catch(error) {
+                if(!valid()) return;
+                feedback.textContent="Save not confirmed. Retry the same answer.";
+                feedback.className="red"; b.disabled=false;
+            } finally { if(valid()){busy=false; $("onlineLearningRefresh").disabled=false;} }
+        };
+    });
+}
+function renderOnlineLearning() {
+    if(currentRole!=="student"||!currentStudentId) return;
+    const version=sessionVersion, studentId=currentStudentId, request=++onlineRequest;
+    const valid=()=>version===sessionVersion&&request===onlineRequest&&currentRole==="student"&&currentStudentId===studentId;
+    $("onlineLearning").classList.remove("hidden");
+    const concepts=$("onlineConcepts"), modules=$("onlineModules"); concepts.replaceChildren(); modules.replaceChildren();
+    const analysis=onlineConceptAnalysis(records);
+    $("onlineLearningStatus").textContent=analysis.length?`Analysis for ${studentId} · ${analysis.length} concepts. Exam accuracy is an estimate, not a validated mastery measure.`:"No eligible exam results available.";
+    const grid=document.createElement("div"); grid.className="concept-grid"; concepts.appendChild(grid);
+    for(const s of analysis) {
+        const card=document.createElement("div"); card.className="question"; grid.appendChild(card);
+        addText(card,s.concept,"h3"); addText(card,`${s.accuracy}% · ${s.correct}/${s.total} correct`);
+        addText(card,s.level.replaceAll("_"," ")).className=s.level==="STRONG"?"green":s.level==="NEEDS_FOCUS"?"red":"yellow";
+        if(!["NEEDS_FOCUS","DEVELOPING"].includes(s.level)) continue;
+        const content=onlineContent[s.concept];
+        const module=document.createElement("div"); module.className="learning-module"; modules.appendChild(module);
+        addText(module,(s.level==="NEEDS_FOCUS"?"HIGH":"MEDIUM")+" PRIORITY","strong");
+        addText(module,content?content[0]:s.concept,"h3");
+        if(!content){addText(module,"Lesson content not available yet.");continue;}
+        addText(module,content[1]); addText(module,"Common mistake: "+content[2]); addText(module,"Study plan: "+content[3]);
+        renderOnlineQuiz(module,s.concept,content,valid);
+    }
+    if(!modules.children.length) addText(modules,"No revision modules recommended from current exam results.");
+}
+async function refreshOnlineLearning() {
+    const version=sessionVersion;
+    $("onlineLearningRefresh").disabled=true;
+    try {
+        await loadAssessments();
+        if(version!==sessionVersion||currentRole!=="student") return;
+        renderOnlineLearning(); await loadOnlinePractice();
+    } finally {if(version===sessionVersion) $("onlineLearningRefresh").disabled=false;}
+}
+
+$("onlineLearningRefresh").onclick = refreshOnlineLearning;
 initialize();
 
 </script>
